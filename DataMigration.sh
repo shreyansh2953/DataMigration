@@ -36,6 +36,7 @@ check_SessionValidity(){
     echo "Error: To Many sessions for $2 Backup Files"
     exit 1
    fi      
+   
 }
 
 check_if_any_session_is_running(){
@@ -154,15 +155,15 @@ do
   fi	
 done
 
-split -l $Files_In_Each_Session $currentPath/index.txt -d -a 2 $currentPath/$migDir/"$migDir-file_"
+
+split -l $Files_In_Each_Session $currentPath/index.txt $currentPath/$migDir/"$migDir-file"
 
 i=0
 cd $currentPath/$migDir/
 for file in $( ls -lh | awk '{print$9}' | awk '!/^$/' )
 do
     
-     screen -S $file -d -m bash -c "rsync -auvh --progress --recursive --files-from=$currentPath/$migDir/$file $spath $username@$Ip:$tpath --log-file=/tmp/$migDir-eip$i.log"
+     screen -S $file -d -m bash -c "rsync -auvh --progress --recursive --files-from=$currentPath/$migDir/$file $spath $username@$Ip:$tpath --log-file=/tmp/$file.log"
      let i++
 done
-
 
