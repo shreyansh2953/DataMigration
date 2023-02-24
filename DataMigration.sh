@@ -41,7 +41,8 @@ check_SessionValidity(){
 check_if_any_session_is_running(){
 
     local flag="false"
-     for session in $( ls $1/$2 -lh | egrep -v '^d' | awk '{print$9}' | awk '!/^$/' )
+    cd $1/$2
+     for session in $( ls -lh | egrep -v '^d' | awk '{print$9}' | awk '!/^$/' )
      do
         
         mycurrsession=$( screen -ls | grep $session )
@@ -114,7 +115,9 @@ check_FileExistsInDir $spath $scriptName
 
 check_DirExsists_Target_Server $username $Ip $tpath
 
-let countBackupFiles=$( ls $spath -alh | egrep -v '^d' | awk '{print$9}' | awk '!/^$/' | wc -l )
+cd $spath
+
+let countBackupFiles=$( ls -alh | egrep -v '^d' | awk '{print$9}' | awk '!/^$/' | wc -l | xargs )
 
 echo "************************* we have $countBackupFiles files inside $spath *************************"
 
@@ -123,7 +126,7 @@ echo "Enter the no. of session you want:"
 read session_count
 check_Interger $session_count
 
-ls $spath -alh | egrep -v '^d' | awk '{print$9}' | awk '!/^$/'  > $currentPath/index.txt
+ls -alh | egrep -v '^d' | awk '{print$9}' | awk '!/^$/'  > $currentPath/index.txt
 
 let Files_In_Each_Session=$countBackupFiles/$session_count
 check_SessionValidity $Files_In_Each_Session $countBackupFiles
@@ -154,7 +157,8 @@ done
 split -l $Files_In_Each_Session $currentPath/index.txt -d -a 2 $currentPath/$migDir/"$migDir-file_"
 
 i=0
-for file in $( ls $currentPath/$migDir/ -lh | awk '{print$9}' | awk '!/^$/' )
+cd $currentPath/$migDir/
+for file in $( ls -lh | awk '{print$9}' | awk '!/^$/' )
 do
     
      screen -S $file -d -m bash -c "rsync -auvh --progress --recursive --files-from=$currentPath/$migDir/$file $spath $username@$Ip:$tpath --log-file=/tmp/$migDir-eip$i.log"
