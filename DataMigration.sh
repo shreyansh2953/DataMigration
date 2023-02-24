@@ -41,7 +41,7 @@ check_SessionValidity(){
 check_if_any_session_is_running(){
 
     local flag="false"
-     for session in $( ls $1/$2 -Slh | egrep -v '^d' | awk '{print$9}' | awk '!/^$/' )
+     for session in $( ls $1/$2 -lh | egrep -v '^d' | awk '{print$9}' | awk '!/^$/' )
      do
         
         mycurrsession=$( screen -ls | grep $session )
@@ -114,7 +114,7 @@ check_FileExistsInDir $spath $scriptName
 
 check_DirExsists_Target_Server $username $Ip $tpath
 
-let countBackupFiles=$( ls $spath -Salh | egrep -v '^d' | awk '{print$9}' | awk '!/^$/' | wc -l )
+let countBackupFiles=$( ls $spath -alh | egrep -v '^d' | awk '{print$9}' | awk '!/^$/' | wc -l )
 
 echo "************************* we have $countBackupFiles files inside $spath *************************"
 
@@ -123,7 +123,7 @@ echo "Enter the no. of session you want:"
 read session_count
 check_Interger $session_count
 
-ls $spath -Salh | egrep -v '^d' | awk '{print$9}' | awk '!/^$/'  > $currentPath/index.txt
+ls $spath -alh | egrep -v '^d' | awk '{print$9}' | awk '!/^$/'  > $currentPath/index.txt
 
 let Files_In_Each_Session=$countBackupFiles/$session_count
 check_SessionValidity $Files_In_Each_Session $countBackupFiles
