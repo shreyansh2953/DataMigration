@@ -158,12 +158,13 @@ done
 
 split -l $Files_In_Each_Session $currentPath/index.txt $currentPath/$migDir/"$migDir-file"
 
-i=0
+i=1
 cd $currentPath/$migDir/
 for file in $( ls -lh | awk '{print$9}' | awk '!/^$/' )
 do
-    
+     echo "$i -> $file"
      screen -S $file -d -m bash -c "rsync -auvh --progress --recursive --files-from=$currentPath/$migDir/$file $spath $username@$Ip:$tpath --log-file=/tmp/$file.log"
+     sleep 1
      let i++
 done
 
